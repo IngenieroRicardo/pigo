@@ -1,0 +1,61 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <style>
+        /* Elimina márgenes y scrollbars */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;   /* Evita scrollbars */
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            /* Opcional: fondo oscuro mientras carga */
+            background: #000;
+        }
+    </style>
+    <script src="js/wasm_exec.js"></script>
+    <script type="text/javascript">
+        // Función para ajustar las dimensiones reales del canvas (no solo CSS)
+        function resizeCanvas() {
+            var canvas = document.getElementById('viewPort');
+            if (canvas) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+        }
+
+        // Carga y ejecución del wasm
+        function fetchAndInstantiate(url, importObject) {
+            return fetch(url).then(response =>
+                response.arrayBuffer()
+            ).then(bytes =>
+                WebAssembly.instantiate(bytes, importObject)
+            ).then(results =>
+                results.instance
+            );
+        }
+
+        window.onload = function () {
+            resizeCanvas();                     // Ajusta tamaño inicial
+            window.addEventListener('resize', resizeCanvas); // Redimensiona si cambia la ventana
+            var go = new Go();
+            var mod = fetchAndInstantiate("lib.wasm", go.importObject);
+            mod.then(function (instance) {
+                go.run(instance);
+            });
+        };
+    </script>
+</head>
+<body>
+    <canvas id="viewPort"></canvas>
+</body>
+</html>
