@@ -40,15 +40,15 @@ type Canvas struct {
 var det *detector.Detector
 
 // NewCanvas creates and initializes the new Canvas element.
-// It tries to use an existing canvas with id "viewPort". If not found, it creates one.
+// It tries to use an existing canvas with id "viewport". If not found, it creates one.
 func NewCanvas() *Canvas {
 	var c Canvas
 	c.window = js.Global()
 	c.doc = c.window.Get("document")
 	c.body = c.doc.Get("body")
 
-	// Try to get existing canvas with id "viewPort"
-	existingCanvas := c.doc.Call("getElementById", "viewPort")
+	// Try to get existing canvas with id "viewport"
+	existingCanvas := c.doc.Call("getElementById", "viewport")
 	if existingCanvas.Truthy() {
 		c.canvas = existingCanvas
 		// Get existing dimensions
@@ -68,7 +68,7 @@ func NewCanvas() *Canvas {
 		c.canvas = c.doc.Call("createElement", "canvas")
 		c.canvas.Set("width", 640)
 		c.canvas.Set("height", 480)
-		c.canvas.Set("id", "viewPort")
+		c.canvas.Set("id", "viewport")
 		c.body.Call("appendChild", c.canvas)
 		c.windowSize.width = 640
 		c.windowSize.height = 480
